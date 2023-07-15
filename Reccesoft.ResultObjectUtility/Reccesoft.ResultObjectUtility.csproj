@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.1</TargetFramework>
 		<Nullable>enable</Nullable>
-		<Version>4.1.0</Version>
+		<Version>4.2.0</Version>
 		<Authors>Tisquip</Authors>
 		<Description>Result object to use</Description>
 		<RepositoryUrl>https://github.com/reccesoft/Reccesoft.ResultObjectUtility</RepositoryUrl>

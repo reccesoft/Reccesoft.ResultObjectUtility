@@ -147,6 +147,7 @@ namespace TS
         }
 
         public static implicit operator bool(ResultObject? resultObject) => resultObject?.IsSuccess ?? false;
+        public static implicit operator ResultObject(bool isSuccess) => isSuccess ? Ok() : Error();
         public static implicit operator ResultObject(Exception ex) => new ResultObject(ex, true);
         public static implicit operator List<string>(ResultObject? resultObject) 
         {
