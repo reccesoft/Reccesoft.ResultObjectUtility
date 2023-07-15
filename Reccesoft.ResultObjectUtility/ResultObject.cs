@@ -52,7 +52,7 @@ namespace TS
         public static ResultObject OkOrNotFound<T>(T item, string? itemNameNotFound = null, string? okMessageIfItemIsFound = null)
         {
             ResultObject vtr = new ResultObject();
-            vtr.SetOkOrNotFound(item, itemNameNotFound, okMessageIfItemIsFound);
+            vtr.SetOkOrNotFoundOnlyDontAttatchObject(item, itemNameNotFound, okMessageIfItemIsFound);
             return vtr;
         }
 
@@ -100,7 +100,7 @@ namespace TS
             Messages = new List<string>() { message };
         }
 
-        public void SetOkOrNotFound<T>(T item, string? itemNameNotFound = null, string? okMessageIfItemIsFound = null)
+        public void SetOkOrNotFoundOnlyDontAttatchObject<T>(T item, string? itemNameNotFound = null, string? okMessageIfItemIsFound = null)
         {
             if (item == null)
             {
@@ -161,12 +161,12 @@ namespace TS
         public void SetOkOrNotFoundAndAttachReturnedObject(T? item, string? itemNameNotFound = null, string? okMessageIfItemIsFound = null)
         {
             ReturnedObject = item;
-            SetOkOrNotFound(item, itemNameNotFound, okMessageIfItemIsFound);
+            SetOkOrNotFoundOnlyDontAttatchObject(item, itemNameNotFound, okMessageIfItemIsFound);
         }
 
         public async Task SetOkOrNotFoundAndAttachReturnedObjectFromMethod<Y>(Y item, Func<Task<T>> getObjectToReturnIfObjectWasFound, string? itemNameNotFound = null, string? okMessageIfItemIsFound = null)
         {
-            SetOkOrNotFound(item, itemNameNotFound, okMessageIfItemIsFound);
+            SetOkOrNotFoundOnlyDontAttatchObject(item, itemNameNotFound, okMessageIfItemIsFound);
             if (IsSuccess && getObjectToReturnIfObjectWasFound != null)
             {
                 ReturnedObject = await getObjectToReturnIfObjectWasFound();
@@ -235,7 +235,7 @@ namespace TS
         }
 
         public static implicit operator T?(ResultObject<T> resultObject) => resultObject.ReturnedObject;
-        public static implicit operator ResultObject<T>(T objectToReturnOrNotFoundError)
+        public static implicit operator ResultObject<T>(T? objectToReturnOrNotFoundError)
         {
             ResultObject<T> vtr = new ResultObject<T>();
             vtr.SetOkOrNotFoundAndAttachReturnedObject(objectToReturnOrNotFoundError);
