@@ -63,10 +63,10 @@ namespace TS
             return vtr;
         }
 
-        public void SetOk(List<string>? messages = null)
+        public void SetOk(IEnumerable<string>? messages = null)
         {
             IsSuccess = true;
-            Messages = messages?.Any() ?? false ? messages : new List<string>() { DefaultOkMessage };
+            Messages = messages?.Any() ?? false ? messages.ToList() : new List<string>() { DefaultOkMessage };
         }
 
         public void SetOk(string? message)
@@ -75,10 +75,10 @@ namespace TS
             SetOk(new List<string>() { message });
         }
 
-        public void SetError(List<string>? messages = null)
+        public void SetError(IEnumerable<string>? messages = null)
         {
             IsSuccess = false;
-            Messages = messages?.Any() ?? false ? messages : new List<string>() { DefaultErrorMessage };
+            Messages = messages?.Any() ?? false ? messages.ToList() : new List<string>() { DefaultErrorMessage };
         }
 
         public void SetError(string? message)
@@ -87,7 +87,7 @@ namespace TS
             SetError(new List<string>() { message });
         }
 
-        public void SetError(Exception ex, bool setRealExceptionMessage = true)
+        public void SetError(Exception ex, bool setRealExceptionMessage = false)
         {
             SetError(setRealExceptionMessage ? ex.Message : DefaultGenericException);
         }
@@ -130,6 +130,7 @@ namespace TS
         }
 
         public static implicit operator bool(ResultObject resultObject) => resultObject.IsSuccess;
+        public static implicit operator ResultObject(Exception ex) => new ResultObject(ex, true);
     }
 
     public class ResultObject<T> : ResultObject where T : class
@@ -145,7 +146,7 @@ namespace TS
         }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
-        public void SetOkAndAttachReturnedObject(T itemToReturn, List<string>? messages = null)
+        public void SetOkAndAttachReturnedObject(T itemToReturn, IEnumerable<string>? messages = null)
         {
             SetOk(messages);
             ReturnedObject = itemToReturn;
@@ -212,7 +213,7 @@ namespace TS
             return vtr;
         }
 
-        public static ResultObject<T> Error(List<string>? errorMessages = null)
+        public static ResultObject<T> Error(IEnumerable<string>? errorMessages = null)
         {
             ResultObject<T> vtr = new ResultObject<T>();
             vtr.SetError(errorMessages);
@@ -238,6 +239,13 @@ namespace TS
         {
             ResultObject<T> vtr = new ResultObject<T>();
             vtr.SetOkOrNotFoundAndAttachReturnedObject(objectToReturnOrNotFoundError);
+            return vtr;
+        }
+        public static implicit operator bool(ResultObject<T> resultObject) => resultObject.IsSuccess;
+        public static implicit operator ResultObject<T>(Exception ex)
+        {
+            ResultObject<T> vtr = new ResultObject<T>();
+            vtr.SetError(ex, true);
             return vtr;
         }
     }
