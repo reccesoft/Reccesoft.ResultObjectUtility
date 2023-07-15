@@ -14,6 +14,7 @@ namespace TS
         public const string DefaultErrorMessageDatabaseTransaction = "A database transaction error occurred";
 
         public bool IsSuccess { get; set; }
+        public bool HasRealExceptionMessage { get; set; }
         public List<string> Messages { get; set; } = new List<string>();
 
         public ResultObject()
@@ -26,6 +27,7 @@ namespace TS
         {
             IsSuccess = false;
             Messages = new List<string>() { useRealExceptionMessage ? exception.Message : DefaultGenericException };
+            HasRealExceptionMessage = useRealExceptionMessage;
         }
 
         public static ResultObject Ok(string? okMessage = null)
@@ -90,6 +92,7 @@ namespace TS
         public void SetError(Exception ex, bool setRealExceptionMessage = false)
         {
             SetError(setRealExceptionMessage ? ex.Message : DefaultGenericException);
+            HasRealExceptionMessage = setRealExceptionMessage;
         }
 
         public void SetNotFound(string? itemName = null)
