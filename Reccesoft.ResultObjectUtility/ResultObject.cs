@@ -146,8 +146,13 @@ namespace TS
             }
         }
 
-        public static implicit operator bool(ResultObject resultObject) => resultObject.IsSuccess;
+        public static implicit operator bool(ResultObject? resultObject) => resultObject?.IsSuccess ?? false;
         public static implicit operator ResultObject(Exception ex) => new ResultObject(ex, true);
+        public static implicit operator List<string>(ResultObject? resultObject) 
+        {
+            resultObject ??= NoActionTakenResultObject();
+            return resultObject.Messages ?? new List<string>();
+        } 
     }
 
     public class ResultObject<T> : ResultObject where T : class
@@ -254,27 +259,34 @@ namespace TS
             return vtr;
         }
 
-        public void CopyOtherResultObject(ResultObject resultObject, T objectToAttachCanBeNull)
+        public void CopyOtherResultObject(ResultObject? resultObject, T objectToAttachCanBeNull)
         {
-            IsSuccess = resultObject?.IsSuccess ?? false;
-            Messages = resultObject?.Messages ?? new List<string>();
+            resultObject ??= ResultObject.NoActionTakenResultObject();
+            IsSuccess = resultObject.IsSuccess;
+            Messages = resultObject.Messages.ToList();
+            HasRealExceptionMessage = resultObject.HasRealExceptionMessage;
             ReturnedObject = objectToAttachCanBeNull;
         }
 
-        public static implicit operator T?(ResultObject<T> resultObject) => resultObject.ReturnedObject;
+        public static implicit operator T?(ResultObject<T>? resultObject) => resultObject?.ReturnedObject;
         public static implicit operator ResultObject<T>(T? objectToReturnOrNotFoundError)
         {
             ResultObject<T> vtr = new ResultObject<T>();
             vtr.SetOkOrNotFoundAndAttachReturnedObject(objectToReturnOrNotFoundError);
             return vtr;
         }
-        public static implicit operator bool(ResultObject<T> resultObject) => resultObject.IsSuccess;
+        public static implicit operator bool(ResultObject<T>? resultObject) => resultObject?.IsSuccess ?? false;
         public static implicit operator ResultObject<T>(Exception ex)
         {
             ResultObject<T> vtr = new ResultObject<T>();
             vtr.SetError(ex, true);
             return vtr;
         }
-       
+        public static implicit operator List<string>(ResultObject<T>? resultObject)
+        {
+            resultObject ??= NoActionTakenResultObject();
+            return resultObject.Messages ?? new List<string>();
+        }
+
     }
 }
