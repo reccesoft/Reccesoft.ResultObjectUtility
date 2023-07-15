@@ -17,11 +17,20 @@ namespace TS
         public bool HasRealExceptionMessage { get; set; }
         public List<string> Messages { get; set; } = new List<string>();
 
+
         public ResultObject()
         {
-            IsSuccess = false;
-            Messages = new List<string>() { DefaultNoActionTakenMessage };
         }
+
+        public ResultObject(ResultObject? resultObject)
+        {
+            resultObject ??= NoActionTakenResultObject();
+            this.IsSuccess = resultObject.IsSuccess;
+            this.HasRealExceptionMessage = resultObject.HasRealExceptionMessage;
+            this.Messages = new List<string>(resultObject.Messages.ToList());
+        }
+
+        public static ResultObject NoActionTakenResultObject() => Error(DefaultNoActionTakenMessage);
 
         public ResultObject(Exception exception, bool useRealExceptionMessage = false)
         {
@@ -97,6 +106,11 @@ namespace TS
 
         public void SetNotFound(string? itemName = null)
         {
+            SetNotFoundBase(itemName);
+        }
+
+        protected void SetNotFoundBase(string? itemName)
+        {
             itemName = String.IsNullOrWhiteSpace(itemName) ? "Object Requested" : itemName;
             string message = $"{itemName} Not Found";
             IsSuccess = false;
@@ -142,17 +156,27 @@ namespace TS
         /// It can be null depending on the type
         /// </summary>
         public T? ReturnedObject { get; set; }
-
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public ResultObject() : base()
         {
         }
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
+        public ResultObject(ResultObject? resultObject)
+        {
+            resultObject ??= NoActionTakenResultObject();
+            IsSuccess = resultObject.IsSuccess;
+            HasRealExceptionMessage = resultObject.HasRealExceptionMessage;
+            Messages = new List<string>(resultObject.Messages.ToList());
+        }
+        new public static ResultObject<T> NoActionTakenResultObject() => Error(DefaultNoActionTakenMessage);
         public void SetOkAndAttachReturnedObject(T itemToReturn, IEnumerable<string>? messages = null)
         {
             SetOk(messages);
             ReturnedObject = itemToReturn;
+        }
+
+        new public void SetNotFound(string? itemName = null)
+        {
+            SetNotFoundBase(itemName);
         }
 
         public void SetOkAndAttachReturnedObject(T itemToReturn, string? message)
@@ -251,5 +275,6 @@ namespace TS
             vtr.SetError(ex, true);
             return vtr;
         }
+       
     }
 }
