@@ -197,7 +197,7 @@ namespace TS
             SetOkOrNotFoundOnlyDontAttatchObject(item, itemNameNotFound, okMessageIfItemIsFound);
         }
 
-        public async Task SetOkOrNotFoundAndAttachReturnedObjectFromMethod<Y>(Y item, Func<Task<T>> getObjectToReturnIfObjectWasFound, string? itemNameNotFound = null, string? okMessageIfItemIsFound = null)
+        public async Task SetOkOrNotFoundAndAttachReturnedObjectFromMethod<Y>(Y? item, Func<Task<T>> getObjectToReturnIfObjectWasFound, string? itemNameNotFound = null, string? okMessageIfItemIsFound = null) where Y : class
         {
             SetOkOrNotFoundOnlyDontAttatchObject(item, itemNameNotFound, okMessageIfItemIsFound);
             if (IsSuccess && getObjectToReturnIfObjectWasFound != null)
@@ -206,7 +206,7 @@ namespace TS
             }
         }
 
-        public async Task SetOkOrDatabaseErrorAndAttachReturnedObject(int numberOfRowsChanged, Func<Task<T>> getObjectToReturnOnlyWhenDatabaseTransactionSuccessful, string? databaseErrorMessage = null, string? databaseSuccessMessage = null)
+        public async Task SetOkOrDatabaseErrorAndAttachReturnedObject(int numberOfRowsChanged, Func<Task<T?>> getObjectToReturnOnlyWhenDatabaseTransactionSuccessful, string? databaseErrorMessage = null, string? databaseSuccessMessage = null)
         {
             SetOkOrDatabaseError(numberOfRowsChanged, databaseErrorMessage, databaseSuccessMessage);
             if (IsSuccess && getObjectToReturnOnlyWhenDatabaseTransactionSuccessful != null)
@@ -215,7 +215,7 @@ namespace TS
             }
         }
 
-        public Task SetOkOrDatabaseErrorAndAttachReturnedObject(int numberOfRowsChanged, T objectToReturnOnlyWhenDatabaseTransactionSuccessful, string? databaseErrorMessage = null, string? databaseSuccessMessage = null) => SetOkOrDatabaseErrorAndAttachReturnedObject(numberOfRowsChanged, () => Task.FromResult(objectToReturnOnlyWhenDatabaseTransactionSuccessful), databaseErrorMessage, databaseSuccessMessage);
+        public Task SetOkOrDatabaseErrorAndAttachReturnedObject(int numberOfRowsChanged, T? objectToReturnOnlyWhenDatabaseTransactionSuccessful, string? databaseErrorMessage = null, string? databaseSuccessMessage = null) => SetOkOrDatabaseErrorAndAttachReturnedObject(numberOfRowsChanged, () => Task.FromResult(objectToReturnOnlyWhenDatabaseTransactionSuccessful), databaseErrorMessage, databaseSuccessMessage);
 
         public static ResultObject<T> OkAndAttachReturnedObject(T objectToReturn, string? okMessage = null)
         {
@@ -225,21 +225,21 @@ namespace TS
         }
 
 
-        public static ResultObject<T> OkOrNotFoundAndAttachReturnedObject(T item, string? itemNameNotFound = null, string? okMessageIfItemIsFound = null)
+        public static ResultObject<T> OkOrNotFoundAndAttachReturnedObject(T? item, string? itemNameNotFound = null, string? okMessageIfItemIsFound = null)
         {
             ResultObject<T> vtr = new ResultObject<T>();
             vtr.SetOkOrNotFoundAndAttachReturnedObject(item, itemNameNotFound, okMessageIfItemIsFound);
             return vtr;
         }
 
-        public static async Task<ResultObject<T>> OkOrNotFoundAndAttachReturnedObjectFromMethod<Y>(Y item, Func<Task<T>> getObjectToReturnIfObjectWasFound, string? itemNameNotFound = null, string? okMessageIfItemIsFound = null)
+        public static async Task<ResultObject<T>> OkOrNotFoundAndAttachReturnedObjectFromMethod<Y>(Y? item, Func<Task<T>> getObjectToReturnIfObjectWasFound, string? itemNameNotFound = null, string? okMessageIfItemIsFound = null) where Y : class
         {
             ResultObject<T> vtr = new ResultObject<T>();
             await vtr.SetOkOrNotFoundAndAttachReturnedObjectFromMethod(item, getObjectToReturnIfObjectWasFound, itemNameNotFound, okMessageIfItemIsFound);
             return vtr;
         }
 
-        public static async Task<ResultObject<T>> OkOrDatabaseErrorAndAttachReturnedObject(int numberOfRowsChanged, Func<Task<T>> getObjectToReturnOnlyWhenDatabaseTransactionSuccessful, string? databaseErrorMessage = null, string? databaseSuccessMessage = null)
+        public static async Task<ResultObject<T>> OkOrDatabaseErrorAndAttachReturnedObject(int numberOfRowsChanged, Func<Task<T?>> getObjectToReturnOnlyWhenDatabaseTransactionSuccessful, string? databaseErrorMessage = null, string? databaseSuccessMessage = null)
         {
             ResultObject<T> vtr = new ResultObject<T>();
             await vtr.SetOkOrDatabaseErrorAndAttachReturnedObject(numberOfRowsChanged, getObjectToReturnOnlyWhenDatabaseTransactionSuccessful, databaseErrorMessage, databaseSuccessMessage);
